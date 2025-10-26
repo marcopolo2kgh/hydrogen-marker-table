@@ -8,7 +8,6 @@ The aim is to provide a reproducible framework for mapping experimental data to 
 ## 🌍 Multilingual Overview
 
 ### 🇬🇧 English (EN)
-
 Enter the event parameters: **upper orbit**, **lower orbit**, and **wavelength λ**.  
 The result will be the **MARKER**, which is specific to this event and is composed of the difference between the upper orbit marker and the lower orbit marker.
 
@@ -27,7 +26,6 @@ The **Marker orbit values** characterize all events across the entire wavelength
 ---
 
 ### 🇵🇱 Polski (PL)
-
 Podaj parametry zdarzenia: **orbitę górną**, **orbitę dolną** oraz **długość fali λ**.  
 Wynikiem będzie **MARKER**, specyficzny dla tego zdarzenia, zdefiniowany jako różnica pomiędzy markerem orbity górnej a markerem orbity dolnej.
 
@@ -46,7 +44,6 @@ Markery spełniają regułę arytmetyczną:
 ---
 
 ### 🇩🇪 Deutsch (DE)
-
 Geben Sie die Ereignisparameter ein: **obere Umlaufbahn**, **untere Umlaufbahn** und **Wellenlänge λ**.  
 Das Ergebnis ist der **MARKER**, der für dieses Ereignis spezifisch ist und aus der Differenz zwischen dem Marker der oberen und der unteren Umlaufbahn besteht.
 
@@ -65,7 +62,6 @@ Die **Marker-Orbitwerte** charakterisieren alle Ereignisse über das gesamte Wel
 ---
 
 ### 🇫🇷 Français (FR)
-
 Entrez les paramètres de l’événement : **orbite supérieure**, **orbite inférieure** et **longueur d’onde λ**.  
 Le résultat sera le **MARKER**, spécifique à cet événement, composé de la différence entre le marqueur de l’orbite supérieure et celui de l’orbite inférieure.
 
@@ -92,6 +88,13 @@ Les **valeurs des marqueurs d’orbite** caractérisent tous les événements su
 - Collect and document orbit-related values in both decimal and rational forms.  
 - Provide multilingual explanations (EN/PL/DE/FR) for clarity and outreach.  
 - Build a foundation for further analysis of hydrogen spectra using the Marker calculus.  
+
+---
+
+## 📚 References
+- NIST Atomic Spectra Database (ASD)  
+- Selected works on hydrogen spectra and harmonic analysis  
+- Author’s own research on Marker calculus
 
 ---
 
