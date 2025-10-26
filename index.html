@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalkulator MARKER + NIST</title>
+  <style>
+    body { font-family: Arial; margin: 40px; background: #f4f4f4; }
+    h1 { color: #333; }
+    label, select, input { margin: 10px 0; display: block; }
+    .result { margin-top: 20px; font-size: 1.2em; color: darkblue; }
+  </style>
+</head>
+<body>
+  <h1>Kalkulator MARKER + NIST</h1>
+
+  <label for="highOrbit">Górna orbita:</label>
+  <select id="highOrbit"></select>
+
+  <label for="lowOrbit">Dolna orbita:</label>
+  <select id="lowOrbit"></select>
+
+  <button onclick="calculateMarker()">Oblicz MARKER</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    // przykładowe wartości markerów orbit
+    const markers = {
+      1: -20, 2: 7, 3: 3, 4: 0, 5: 0, 6: 0, 7: 0,
+      8: -0.25, 9: 0.222222222, 10: 0, 11: 0.148760331,
+      12: 0, 13: 0.213017751, 14: 0, 15: 0, 16: -0.0625,
+      17: -0.380622837, 18: 0.555555556, 19: 0.35734072
+      // … możesz uzupełnić dalej
+    };
+
+    // próbka danych NIST (Transition + λ)
+    const nistData = [
+      { transition: "2->1", wavelength: 121.567 },
+      { transition: "3->1", wavelength: 102.573 },
+      { transition: "4->1", wavelength: 97.253 },
+      { transition: "5->1", wavelength: 94.974 },
+      { transition: "3->2", wavelength: 656.279 },
+      { transition: "4->2", wavelength: 486.133 },
+      { transition: "5->2", wavelength: 434.047 }
+      // … możesz dodać do ~100 wierszy
+    ];
+
+    const highSelect = document.getElementById("highOrbit");
+    const lowSelect = document.getElementById("lowOrbit");
+
+    for (let i = 1; i <= 20; i++) {
+      const optionHigh = document.createElement("option");
+      optionHigh.value = i;
+      optionHigh.text = i;
+      highSelect.appendChild(optionHigh);
+
+      const optionLow = document.createElement("option");
+      optionLow.value = i;
+      optionLow.text = i;
+      lowSelect.appendChild(optionLow);
+    }
+
+    function calculateMarker() {
+      const high = parseInt(highSelect.value);
+      const low = parseInt(lowSelect.value);
+
+      const markerHigh = markers[high] ?? 0;
+      const markerLow = markers[low] ?? 0;
+      const markerValue = markerHigh - markerLow;
+
+      // szukamy długości fali w bazie NIST
+      const transition = `${high}->${low}`;
+      const nistEntry = nistData.find(d => d.transition === transition);
+
+      let output = `MARKER dla przejścia ${high} › ${low} = <strong>${markerValue.toFixed(9)}</strong>`;
+      if (nistEntry) {
+        output += `<br>Długość fali λ (NIST): <strong>${nistEntry.wavelength} nm</strong>`;
+      } else {
+        output += `<br>Brak danych NIST dla tego przejścia.`;
+      }
+
+      document.getElementById("result").innerHTML = output;
+    }
+  </script>
+</body>
+</html>
