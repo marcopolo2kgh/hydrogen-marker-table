@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>System identyfikacji markerów (MHR)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #111; color: #eee; }
+    h1 { font-size: 20px; }
+    label { display: block; margin-top: 10px; }
+    input { padding: 4px 6px; margin-top: 4px; width: 80px; }
+    button { margin-top: 15px; padding: 6px 12px; cursor: pointer; }
+    pre { background: #222; padding: 10px; border-radius: 4px; white-space: pre-wrap; }
+    .error { color: #ff6666; }
+    .ok { color: #66ff99; }
+  </style>
+</head>
+<body>
+  <h1>SYSTEM IDENTYFIKACJI MARKERÓW (Marek Suder)</h1>
+
+  <label>
+    Numer orbity wyższej (H) [1–39]:
+    <input type="number" id="hInput" min="1" max="39" value="2">
+  </label>
+
+  <label>
+    Numer orbity niższej (L) [1–39]:
+    <input type="number" id="lInput" min="1" max="39" value="1">
+  </label>
+
+  <button onclick="oblicz()">Oblicz</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    // Baza HARMPAIR – dokładnie jak w Pythonie
+    const HARMPAIR = [
+      "-20.1",   "7.1",     "3.1",      "0.0",      "0.0",
+      "0.0",     "0.0",     "-1.4",     "2.9",      "0.0",
+      "18.121",  "0.0",     "36.169",   "0.0",      "0.0",
+      "-1.16",   "-110.289","5.9",      "129.361",  "0.0",
+      "0.0",     "65.121",  "286.529",  "3.4",      "19.25",
+      "9.169",   "18.729",  "0.0",      "210.841",  "0.0",
+      "424.961", "47.64",   "2.121",    "117.289",  "0.0",
+      "8.9",     "201.1369","303.361",  "4.169"
+    ];
+
+    const CONST_MHR = 16081464; // stała MHR
+
+    function parseSuderNotation(token) {
+      if (token === "0.0") return 0;
+      let isNeg = token.startsWith("-");
+      let t = isNeg ? token.slice(1) : token;
+      let val;
+      if (t.includes(".")) {
+        const [num, den] = t.split(".");
+        val = Number(num) / Number(den);
+      } else {
+        val = Number(t);
+      }
+      return isNeg ? -val : val;
+    }
+
+    function oblicz() {
+      const out = document.getElementById("output");
+      out.textContent = "";
+
+      const h = parseInt(document.getElementById("hInput").value, 10);
+      const l = parseInt(document.getElementById("lInput").value, 10);
+
+      if (isNaN(h) || isNaN(l)) {
+        out.innerHTML = '<span class="error">BŁĄD: Podaj liczby całkowite.</span>';
+        return;
+      }
+      if (h < 1 || h > 39 || l < 1 || l > 39) {
+        out.innerHTML = '<span class="error">BŁĄD: Zakres orbit to 1–39.</span>';
+        return;
+      }
+      if (h <= l) {
+        out.innerHTML = `<span class="error">BŁĄD: H (${h}) musi być większe niż L (${l}).</span>`;
+        return;
+      }
+
+      const m_l = parseSuderNotation(HARMPAIR[l - 1]);
+      const m_h = parseSuderNotation(HARMPAIR[h - 1]);
+
+      const geom = 176400 / (l * l) - 176400 / (h * h);
+      const e_event = m_h - m_l;
+      const d_value = geom - e_event;
+
+      const diff_geom_d = geom - d_value;
+      const lam = CONST_MHR / d_value;
+      const check_ratio = CONST_MHR / lam;
+
+      let txt = "";
+      txt += "-------------------------------------------------------------\n";
+      txt += `ZDARZENIE (FINGERPRINT):      Przejście ${h} → ${l}\n`;
+      txt += `Marker orbity wyższej (H):    ${m_h}\n`;
+      txt += `Marker orbity niższej (L):    ${m_l}\n`;
+      txt += `MARKER ZDARZENIA (E-event):   ${e_event}\n`;
+      txt += "-------------------------------------------------------------\n";
+      txt += `Część geometryczna (geom):    ${geom}\n`;
+      txt += `Pełny mianownik (D):          ${d_value}\n`;
+      txt += `RÓŻNICA (geom - D):           ${diff_geom_d}\n`;
+      txt += "-------------------------------------------------------------\n";
+      txt += `WYLICZONA LAMBDA (λ):         ${String(lam).replace('.', ',')} nm\n`;
+      txt += `ILORAZ (16081464 / λ):        ${check_ratio}\n`;
+      txt += "-------------------------------------------------------------\n";
+
+      if (Math.abs(check_ratio - d_value) < 1e-9) {
+        txt += "WYNIK: Pełna zgodność matematyczna (D = 16081464/λ).\n";
+      } else {
+        txt += `WYNIK: Różnica precyzji: ${Math.abs(check_ratio - d_value)}\n`;
+      }
+
+      out.textContent = txt;
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
